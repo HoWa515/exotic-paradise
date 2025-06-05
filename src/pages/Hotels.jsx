@@ -10,7 +10,7 @@ function Hotels() {
   return (
     <Row type="horizontal">
       <Heading as="h1">All hotels</Heading>
-      <p>TEST</p>
+      <p>TEST text</p>
     </Row>
   );
 }
