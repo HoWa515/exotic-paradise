@@ -11,6 +11,17 @@ export async function getHotels() {
   return data;
 }
 
+export async function createHotel(newHotel) {
+  const { data, error } = await supabase.from("hotels").insert([newHotel]);
+
+  if (error) {
+    console.log(error);
+    throw new Error("Hotel can't be created");
+  }
+
+  return data;
+}
+
 export async function deleteHotel(id) {
   const { data, error } = await supabase.from("hotels").delete().eq("id", id);
 
