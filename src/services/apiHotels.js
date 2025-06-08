@@ -1,5 +1,6 @@
 import supabase from "./supabase";
 
+// READ
 export async function getHotels() {
   const { data, error } = await supabase.from("hotels").select("*");
 
@@ -11,8 +12,8 @@ export async function getHotels() {
   return data;
 }
 
+// CREATE  |  UPDATE
 export async function createEditHotel(newHotel, id) {
-  console.log(typeof newHotel.image);
   const hasImagePath = typeof newHotel.image === "string";
   const imageName = `${Math.random()}-${newHotel.image.name}`.replaceAll(
     "/",
@@ -41,6 +42,7 @@ export async function createEditHotel(newHotel, id) {
   }
 
   // 2. upload image
+
   const { error: storageError } = await supabase.storage
     .from("hotel-images")
     .upload(imageName, newHotel.image);
@@ -54,6 +56,7 @@ export async function createEditHotel(newHotel, id) {
   return data;
 }
 
+// DELETE
 export async function deleteHotel(id) {
   const { data, error } = await supabase.from("hotels").delete().eq("id", id);
 

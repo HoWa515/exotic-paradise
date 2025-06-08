@@ -1,11 +1,10 @@
 /*eslint-disable*/
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { deleteHotel } from "../../services/apiHotels";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateHotelForm from "./CreateHotelForm";
+import { useDeleteHotel } from "./useDeleteHotel";
+import { HiPencil, HiTrash } from "react-icons/hi";
 
 const TableRow = styled.div`
   display: grid;
@@ -59,22 +58,7 @@ function HotelRow({ hotel }) {
     image,
   } = hotel;
 
-  // delete hotel
-  const queryClient = useQueryClient();
-
-  const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: (id) => deleteHotel(id),
-    // onSuccess: refetch data, so UI updated
-    onSuccess: () => {
-      toast.success("Hotel deleted!");
-      queryClient.invalidateQueries({
-        queryKey: ["hotels"],
-      });
-    },
-    onError: (err) => {
-      toast.error("Can't delete!");
-    },
-  });
+  const { isDeleting, deleteHotel } = useDeleteHotel();
   return (
     <>
       <TableRow role="row">
@@ -82,12 +66,18 @@ function HotelRow({ hotel }) {
         <Hotel>{name}</Hotel>
         <div>Fits up to {maxCapacity}</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
         <div>
-          <button onClick={() => mutate(hotelId)} disabled={isDeleting}>
-            Delete
+          <button onClick={() => deleteHotel(hotelId)} disabled={isDeleting}>
+            <HiTrash />
           </button>
-          <button onClick={() => setShowForm((show) => !show)}>Edit</button>
+          <button onClick={() => setShowForm((show) => !show)}>
+            <HiPencil />
+          </button>
         </div>
       </TableRow>
       {showForm && <CreateHotelForm hotelToEdit={hotel} />}

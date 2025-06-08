@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { getHotels } from "../../services/apiHotels";
 import Spinner from "./../../ui/Spinner";
 import HotelRow from "./HotelRow";
+import { useFetchHotels } from "./useFetchHotels";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -30,15 +31,7 @@ const TableHeader = styled.header`
 `;
 
 function HotelTable() {
-  const {
-    isLoading,
-    data: hotels,
-    err,
-  } = useQuery({
-    queryKey: ["hotels"],
-    queryFn: getHotels,
-  });
-
+  const { isLoading, hotels } = useFetchHotels();
   if (isLoading) return <Spinner />;
   return (
     <Table role="table">

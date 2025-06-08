@@ -5,12 +5,14 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEditHotel } from "../../services/apiHotels";
-import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
+import { useCreateHotel } from "./useCreateHotel";
+import { useUpdateHotel } from "./useUpdateHotel";
 
 function CreateHotelForm({ hotelToEdit = {} }) {
+  const { isCreating, createHotel } = useCreateHotel();
+  const { isEditing, editHotel } = useUpdateHotel();
+
   const { id: editId, ...editValues } = hotelToEdit;
   const isEditSession = Boolean(editId);
   // react-hook-form
@@ -20,42 +22,20 @@ function CreateHotelForm({ hotelToEdit = {} }) {
   const { errors } = formState;
 
   function submitForm(data) {
+    // typeof...==='string', means image is from Supabase;
     const image = typeof data.image === "string" ? data.image : data.image[0];
     if (isEditSession)
-      editHotel({ newHotelData: { ...data, image }, id: editId });
-    else createHotel({ ...data, image: image });
-    // console.log(data);
+      editHotel({
+        newHotelData: { ...data, image },
+        id: editId,
+      });
+    // editHotel: remane of mutate in tanstac
+    else createHotel({ ...data, image: image }); // createHotel: rename of mutate
   }
 
   function onError(errors) {
     console.log(errors);
   }
-  // react-query
-  const queryClient = useQueryClient();
-
-  const { isLoading: isCreating, mutate: createHotel } = useMutation({
-    mutationFn: createEditHotel,
-    onSuccess: () => {
-      toast.success("New hotel created successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["hotels"],
-      });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const { isLoading: isEditing, mutate: editHotel } = useMutation({
-    mutationFn: ({ newHotelData, id }) => createEditHotel(newHotelData, id),
-    onSuccess: () => {
-      toast.success("Edited successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["hotels"],
-      });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
 
   const isWorking = isCreating || isEditing;
 
@@ -103,8 +83,8 @@ function CreateHotelForm({ hotelToEdit = {} }) {
           disabled={isWorking}
           defaultValue={0}
           {...register("discount", {
-            required: "This field is required.",
-            min: { value: 1, message: "Discount should be less than price" },
+            // required: "This field is required.",
+            min: { value: 0, message: "Discount should be less than price" },
             validate: (value) =>
               +value <= +getValues().regularPrice ||
               "Discount should be less than regular price",
