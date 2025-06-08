@@ -11,18 +11,30 @@ export async function getHotels() {
   return data;
 }
 
-export async function createHotel(newHotel) {
+export async function createEditHotel(newHotel, id) {
+  console.log(typeof newHotel.image);
+  const hasImagePath = typeof newHotel.image === "string";
   const imageName = `${Math.random()}-${newHotel.image.name}`.replaceAll(
     "/",
     ""
   ); // prevent supabase create folder based on '/'
-  const image = `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/hotel-images/${imageName}`;
+  const image = hasImagePath
+    ? newHotel.image
+    : `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/hotel-images/${imageName}`;
 
+  let query = supabase.from("hotels");
   // 1) create hotel with image URL string
-  const { data, error } = await supabase
-    .from("hotels")
-    .insert([{ ...newHotel, image }]);
+  if (!id) {
+    query = query.insert([{ ...newHotel, image }]);
+  }
 
+  // 2) Edit
+  if (id) {
+    query = query.update({ ...newHotel, image: image }).eq("id", id);
+  }
+
+  const { data, error } = await query.select().single(); // select().single() will get the return data at this point;
+  // 3) error handleing
   if (error) {
     console.log(error);
     throw new Error("Hotel can't be created");

@@ -6,17 +6,24 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createHotel } from "../../services/apiHotels";
+import { createEditHotel } from "../../services/apiHotels";
 import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
 
-function CreateHotelForm() {
+function CreateHotelForm({ hotelToEdit = {} }) {
+  const { id: editId, ...editValues } = hotelToEdit;
+  const isEditSession = Boolean(editId);
   // react-hook-form
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isEditSession ? editValues : {},
+  });
   const { errors } = formState;
 
   function submitForm(data) {
-    mutate({ ...data, image: data.image[0] });
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    if (isEditSession)
+      editHotel({ newHotelData: { ...data, image }, id: editId });
+    else createHotel({ ...data, image: image });
     // console.log(data);
   }
 
@@ -26,8 +33,8 @@ function CreateHotelForm() {
   // react-query
   const queryClient = useQueryClient();
 
-  const { isLoading, mutate } = useMutation({
-    mutationFn: createHotel,
+  const { isLoading: isCreating, mutate: createHotel } = useMutation({
+    mutationFn: createEditHotel,
     onSuccess: () => {
       toast.success("New hotel created successfully!");
       queryClient.invalidateQueries({
@@ -38,13 +45,27 @@ function CreateHotelForm() {
     onError: (err) => toast.error(err.message),
   });
 
+  const { isLoading: isEditing, mutate: editHotel } = useMutation({
+    mutationFn: ({ newHotelData, id }) => createEditHotel(newHotelData, id),
+    onSuccess: () => {
+      toast.success("Edited successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["hotels"],
+      });
+      reset();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const isWorking = isCreating || isEditing;
+
   return (
     <Form onSubmit={handleSubmit(submitForm, onError)}>
       <FormRow label="Hotel name" error={errors?.name?.message}>
         <Input
           type="text"
           id="name"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("name", {
             required: "This field is required.",
           })}
@@ -55,7 +76,7 @@ function CreateHotelForm() {
         <Input
           type="number"
           id="maxCapacity"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("maxCapacity", {
             required: "This field is required.",
             min: { value: 1, message: "Capacity should be at least 1" },
@@ -67,7 +88,7 @@ function CreateHotelForm() {
         <Input
           type="number"
           id="regularPrice"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("regularPrice", {
             required: "This field is required.",
             min: { value: 1, message: "Price should be at least 1" },
@@ -79,7 +100,7 @@ function CreateHotelForm() {
         <Input
           type="number"
           id="discount"
-          disabled={isLoading}
+          disabled={isWorking}
           defaultValue={0}
           {...register("discount", {
             required: "This field is required.",
@@ -95,7 +116,7 @@ function CreateHotelForm() {
         <Textarea
           type="number"
           id="description"
-          disabled={isLoading}
+          disabled={isWorking}
           defaultValue=""
           {...register("description", { required: "This field is required" })}
         />
@@ -104,10 +125,10 @@ function CreateHotelForm() {
       <FormRow label="Hotel photo">
         <FileInput
           id="image"
-          disabled={isLoading}
+          disabled={isWorking}
           accept="image/*"
           {...register("image", {
-            required: "This field is required",
+            required: isEditSession ? false : "This field is required",
           })}
         />
       </FormRow>
@@ -117,7 +138,9 @@ function CreateHotelForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isLoading}>Edit cabin</Button>
+        <Button disabled={isWorking}>
+          {isEditSession ? "Edit" : "Create"}
+        </Button>
       </FormRow>
     </Form>
   );

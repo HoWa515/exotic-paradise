@@ -4,6 +4,8 @@ import { formatCurrency } from "../../utils/helpers";
 import { deleteHotel } from "../../services/apiHotels";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CreateHotelForm from "./CreateHotelForm";
 
 const TableRow = styled.div`
   display: grid;
@@ -44,7 +46,10 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
+// ==============================================
+//=======component
 function HotelRow({ hotel }) {
+  const [showForm, setShowForm] = useState(false);
   const {
     id: hotelId,
     name,
@@ -71,16 +76,22 @@ function HotelRow({ hotel }) {
     },
   });
   return (
-    <TableRow role="row">
-      <img src={image} alt="hotel image" />
-      <Hotel>{name}</Hotel>
-      <div>Fits up to {maxCapacity}</div>
-      <Price>{formatCurrency(regularPrice)}</Price>
-      <Discount>{formatCurrency(discount)}</Discount>
-      <button onClick={() => mutate(hotelId)} disabled={isDeleting}>
-        Delete
-      </button>
-    </TableRow>
+    <>
+      <TableRow role="row">
+        <img src={image} alt="hotel image" />
+        <Hotel>{name}</Hotel>
+        <div>Fits up to {maxCapacity}</div>
+        <Price>{formatCurrency(regularPrice)}</Price>
+        <Discount>{formatCurrency(discount)}</Discount>
+        <div>
+          <button onClick={() => mutate(hotelId)} disabled={isDeleting}>
+            Delete
+          </button>
+          <button onClick={() => setShowForm((show) => !show)}>Edit</button>
+        </div>
+      </TableRow>
+      {showForm && <CreateHotelForm hotelToEdit={hotel} />}
+    </>
   );
 }
 
