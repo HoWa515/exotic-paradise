@@ -9,7 +9,7 @@ import FormRow from "../../ui/FormRow";
 import { useCreateHotel } from "./useCreateHotel";
 import { useUpdateHotel } from "./useUpdateHotel";
 
-function CreateHotelForm({ hotelToEdit = {} }) {
+function CreateHotelForm({ hotelToEdit = {}, onCloseModal }) {
   const { isCreating, createHotel } = useCreateHotel();
   const { isEditing, editHotel } = useUpdateHotel();
 
@@ -25,12 +25,26 @@ function CreateHotelForm({ hotelToEdit = {} }) {
     // typeof...==='string', means image is from Supabase;
     const image = typeof data.image === "string" ? data.image : data.image[0];
     if (isEditSession)
-      editHotel({
-        newHotelData: { ...data, image },
-        id: editId,
-      });
-    // editHotel: remane of mutate in tanstac
-    else createHotel({ ...data, image: image }); // createHotel: rename of mutate
+      editHotel(
+        {
+          newHotelData: { ...data, image },
+          id: editId,
+        },
+        {
+          onSuccess: (data) => {
+            onCloseModal?.();
+          },
+        }
+      );
+    else
+      createHotel(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            onCloseModal?.();
+          },
+        }
+      );
   }
 
   function onError(errors) {
@@ -40,7 +54,10 @@ function CreateHotelForm({ hotelToEdit = {} }) {
   const isWorking = isCreating || isEditing;
 
   return (
-    <Form onSubmit={handleSubmit(submitForm, onError)}>
+    <Form
+      onSubmit={handleSubmit(submitForm, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Hotel name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -115,7 +132,11 @@ function CreateHotelForm({ hotelToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
