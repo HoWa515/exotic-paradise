@@ -4,22 +4,24 @@ import CreateHotelForm from "./CreateHotelForm";
 
 function AddHotel() {
   return (
-    <Modal>
-      {/* opens prop is added for open only one window at a time  */}
-      <Modal.Open opens="hotel-form">
-        <Button>Add new hotel</Button>
-      </Modal.Open>
-      <Modal.Window name="hotel-form">
-        <CreateHotelForm />
-      </Modal.Window>
+    <div>
+      <Modal>
+        {/* opens prop is added for open only one window at a time  */}
+        <Modal.Open opens="hotel-form">
+          <Button>Add new hotel</Button>
+        </Modal.Open>
+        <Modal.Window name="hotel-form">
+          <CreateHotelForm />
+        </Modal.Window>
 
-      {/* <Modal.Open opens="table">
+        {/* <Modal.Open opens="table">
         <Button>Add new hotel</Button>
-      </Modal.Open>
-      <Modal.Window name="table">
+        </Modal.Open>
+        <Modal.Window name="table">
         <HotelTable/>
-      </Modal.Window> */}
-    </Modal>
+        </Modal.Window> */}
+      </Modal>
+    </div>
   );
 }
 // function AddHotel() {

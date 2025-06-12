@@ -1,22 +1,25 @@
 /*eslint-disable*/
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { useState } from "react";
 import CreateHotelForm from "./CreateHotelForm";
 import { useDeleteHotel } from "./useDeleteHotel";
 import { HiPencil, HiTrash } from "react-icons/hi";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import Table from "../../ui/Table";
+import Menus from "../../ui/Menus";
 
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-  column-gap: 2.4rem;
-  align-items: center;
-  padding: 1.4rem 2.4rem;
+// const TableRow = styled.div`
+//   display: grid;
+//   grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
+//   column-gap: 2.4rem;
+//   align-items: center;
+//   padding: 1.4rem 2.4rem;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-`;
+//   &:not(:last-child) {
+//     border-bottom: 1px solid var(--color-grey-100);
+//   }
+// `;
 
 const Img = styled.img`
   display: block;
@@ -48,7 +51,6 @@ const Discount = styled.div`
 // ==============================================
 //=======component
 function HotelRow({ hotel }) {
-  const [showForm, setShowForm] = useState(false);
   const {
     id: hotelId,
     name,
@@ -61,7 +63,7 @@ function HotelRow({ hotel }) {
   const { isDeleting, deleteHotel } = useDeleteHotel();
   return (
     <>
-      <TableRow role="row">
+      <Table.Row role="row">
         <img src={image} alt="hotel image" />
         <Hotel>{name}</Hotel>
         <div>Fits up to {maxCapacity}</div>
@@ -71,16 +73,36 @@ function HotelRow({ hotel }) {
         ) : (
           <span>&mdash;</span>
         )}
+
         <div>
-          <button onClick={() => deleteHotel(hotelId)} disabled={isDeleting}>
-            <HiTrash />
-          </button>
-          <button onClick={() => setShowForm((show) => !show)}>
-            <HiPencil />
-          </button>
+          <Modal>
+            <Menus.Menu>
+              <Menus.Toggle id={hotelId}></Menus.Toggle>
+              <Menus.List id={hotelId}>
+                <Modal.Open opens="edit">
+                  <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                </Modal.Open>
+
+                <Modal.Open opens="delete">
+                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+            </Menus.Menu>
+
+            <Modal.Window name="edit">
+              <CreateHotelForm hotelToEdit={hotel} />
+            </Modal.Window>
+
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName="hotels"
+                disabled={isDeleting}
+                onConfirm={() => deleteHotel(hotelId)}
+              />
+            </Modal.Window>
+          </Modal>
         </div>
-      </TableRow>
-      {showForm && <CreateHotelForm hotelToEdit={hotel} />}
+      </Table.Row>
     </>
   );
 }
