@@ -1,9 +1,14 @@
+/*eslint-disable*/
 import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
-
+import Empty from "../../ui/Empty";
+import Spinner from "../../ui/Spinner";
+import { useFetchBookings } from "./useFetchBookings";
 function BookingTable() {
-  const bookings = [];
+  const { bookings, isLoading } = useFetchBookings();
+  if (isLoading) return <Spinner />;
+  if (!bookings.length) return <Empty resource="bookings" />;
 
   return (
     <Menus>
@@ -17,12 +22,11 @@ function BookingTable() {
           <div></div>
         </Table.Header>
 
-        <Table.Body
-          data={bookings}
-          render={(booking) => (
+        <Table.Body>
+          {bookings.map((booking) => (
             <BookingRow key={booking.id} booking={booking} />
-          )}
-        />
+          ))}
+        </Table.Body>
       </Table>
     </Menus>
   );

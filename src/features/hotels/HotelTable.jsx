@@ -8,6 +8,7 @@ import { useFetchHotels } from "./useFetchHotels";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import Empty from "../../ui/Empty";
 
 const TableHeader = styled.header`
   display: grid;
@@ -28,6 +29,7 @@ function HotelTable() {
   const { isLoading, hotels } = useFetchHotels();
   const [searchParams] = useSearchParams();
   if (isLoading) return <Spinner />;
+  // if (!hotels.length) return <Empty resource="hotels" />;
 
   // 1) filter
   const filterValue = searchParams.get("discount") || "all";

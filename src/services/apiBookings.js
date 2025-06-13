@@ -1,5 +1,16 @@
+/*eslint-disable*/
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+
+export async function getBookings() {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, hotels(name), guests(fullName,email)");
+  if (error) {
+    throw new Error("Bookings can't be loaded");
+  }
+  return data;
+}
 
 export async function getBooking(id) {
   const { data, error } = await supabase

@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 
@@ -7,7 +8,7 @@ import Table from "../../ui/Table";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 
-const Cabin = styled.div`
+const Hotel = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
@@ -45,7 +46,7 @@ function BookingRow({
     totalPrice,
     status,
     guests: { fullName: guestName, email },
-    cabins: { name: cabinName },
+    hotels: { name: hotelName },
   },
 }) {
   const statusToTagName = {
@@ -56,7 +57,7 @@ function BookingRow({
 
   return (
     <Table.Row>
-      <Cabin>{cabinName}</Cabin>
+      <Hotel>{hotelName}</Hotel>
 
       <Stacked>
         <span>{guestName}</span>
