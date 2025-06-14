@@ -1,11 +1,12 @@
+/*eslint-disable*/
 import { useState } from "react";
 import { isFuture, isPast, isToday } from "date-fns";
 import supabase from "../services/supabase";
 import Button from "../ui/Button";
-import { subtractDates } from "../utils/helpers";
+// import { subtractDates } from "../utils/helpers";
 
 import { bookings } from "./data-bookings";
-import { cabins } from "./data-cabins";
+import { hotels } from "./data-hotels";
 import { guests } from "./data-guests";
 
 // const originalSettings = {
@@ -20,8 +21,8 @@ async function deleteGuests() {
   if (error) console.log(error.message);
 }
 
-async function deleteCabins() {
-  const { error } = await supabase.from("cabins").delete().gt("id", 0);
+async function deleteHotels() {
+  const { error } = await supabase.from("hotels").delete().gt("id", 0);
   if (error) console.log(error.message);
 }
 
@@ -35,33 +36,33 @@ async function createGuests() {
   if (error) console.log(error.message);
 }
 
-async function createCabins() {
-  const { error } = await supabase.from("cabins").insert(cabins);
+async function createHotels() {
+  const { error } = await supabase.from("hotels").insert(hotels);
   if (error) console.log(error.message);
 }
 
 async function createBookings() {
-  // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
+  // Bookings need a guestId and a hotelId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and hotelIds, and then replace the original IDs in the booking data with the actual ones from the DB
   const { data: guestsIds } = await supabase
     .from("guests")
     .select("id")
     .order("id");
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
-  const { data: cabinsIds } = await supabase
-    .from("cabins")
+  const allGuestIds = guestsIds.map((hotel) => hotel.id);
+  const { data: hotelsIds } = await supabase
+    .from("hotels")
     .select("id")
     .order("id");
-  const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+  const allhotelIds = hotelsIds.map((hotel) => hotel.id);
 
   const finalBookings = bookings.map((booking) => {
-    // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
+    // Here relying on the order of hotels, as they don't have and ID yet
+    const hotel = hotels.at(booking.hotelId - 1);
+    const numNights = booking.endDate - booking.startDate;
+    const hotelPrice = numNights * (hotel.regularPrice - hotel.discount);
     const extrasPrice = booking.hasBreakfast
       ? numNights * 15 * booking.numGuests
       : 0; // hardcoded breakfast price
-    const totalPrice = cabinPrice + extrasPrice;
+    const totalPrice = hotelPrice + extrasPrice;
 
     let status;
     if (
@@ -85,11 +86,11 @@ async function createBookings() {
     return {
       ...booking,
       numNights,
-      cabinPrice,
+      hotelPrice,
       extrasPrice,
       totalPrice,
       guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      hotelId: allhotelIds.at(booking.hotelId - 1),
       status,
     };
   });
@@ -108,11 +109,11 @@ function Uploader() {
     // Bookings need to be deleted FIRST
     await deleteBookings();
     await deleteGuests();
-    await deleteCabins();
+    await deleteHotels();
 
     // Bookings need to be created LAST
     await createGuests();
-    await createCabins();
+    await createHotels();
     await createBookings();
 
     setIsLoading(false);
