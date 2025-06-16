@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 import {
@@ -109,14 +110,14 @@ function BookingDataBox({ booking }) {
     endDate,
     numNights,
     numGuests,
-    cabinPrice,
+    hotelPrice,
     extrasPrice,
     totalPrice,
     hasBreakfast,
     observations,
     isPaid,
     guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    hotels: { name: hotelName },
   } = booking;
 
   return (
@@ -125,7 +126,7 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {numNights} nights in hotel <span>{hotelName}</span>
           </p>
         </div>
 
@@ -168,7 +169,7 @@ function BookingDataBox({ booking }) {
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
+              ` (${formatCurrency(hotelPrice)} hotel + ${formatCurrency(
                 extrasPrice
               )} breakfast)`}
           </DataItem>
