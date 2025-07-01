@@ -60,7 +60,7 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
 
   // update user again
   // const defaultUrl = `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//1-2419.jpg`;
-  const { data: updatedUser, error2 } = supabase.auth.updateUser({
+  const { data: updatedUser, error2 } = await supabase.auth.updateUser({
     data: {
       avatar: `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//${fileName}`,
     },
