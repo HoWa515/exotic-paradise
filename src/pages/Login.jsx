@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import styled from "styled-components";
 import LoginForm from "../features/authentication/LoginForm";
-import Logo from "../ui/Logo";
+import Logo from "./../ui/Logo";
 import Heading from "../ui/Heading";
 
 const LoginLayout = styled.main`
@@ -12,8 +12,7 @@ const LoginLayout = styled.main`
   justify-content: center;
   gap: 3.2rem;
   /* background-image: url("../exotic-paradise-2026.jpg"); */
-  background: linear-gradient(#d5f8f8c5, #96fcfca3),
-    url("../exotic-paradise-2026.jpg");
+  background: linear-gradient(#d5f8f899, #a4fcfc81), url("./../exotic.png");
   background-size: cover;
 `;
 
