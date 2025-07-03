@@ -16,7 +16,7 @@ function Stats({ bookings, confirmedStays, numDays, hotelCount }) {
     (cur, acc) => acc + cur.numNights,
     0
   );
-  console.log("***", occupatNights);
+
   const totalNights = numDays * hotelCount;
 
   return (
