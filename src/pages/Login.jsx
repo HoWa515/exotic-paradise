@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import styled from "styled-components";
 import LoginForm from "../features/authentication/LoginForm";
 import Logo from "../ui/Logo";
@@ -10,14 +11,17 @@ const LoginLayout = styled.main`
   align-content: center;
   justify-content: center;
   gap: 3.2rem;
-  background-color: var(--color-grey-50);
+  /* background-image: url("../exotic-paradise-2026.jpg"); */
+  background: linear-gradient(#d5f8f8c5, #96fcfca3),
+    url("../exotic-paradise-2026.jpg");
+  background-size: cover;
 `;
 
 function Login() {
   return (
     <LoginLayout>
       <Logo />
-      <Heading as="h4">Log in to your account</Heading>
+      {/* <Heading as="h4">Log in to your account</Heading> */}
       <LoginForm />
     </LoginLayout>
   );
