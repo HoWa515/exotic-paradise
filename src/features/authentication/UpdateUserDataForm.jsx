@@ -56,14 +56,14 @@ function UpdateUserDataForm() {
           disabled={isUpdating}
         />
       </FormRow>
-      <FormRow label="Avatar image">
+      {/* <FormRow label="Avatar image">
         <FileInput
           id="avatar"
           accept="image/*"
           onChange={(e) => setAvatar(e.target.files[0])}
           disabled={isUpdating}
         />
-      </FormRow>
+      </FormRow> */}
       <FormRow>
         <Button
           type="reset"

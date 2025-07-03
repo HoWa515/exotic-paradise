@@ -7,7 +7,7 @@ const StyledUserAvatar = styled.div`
   gap: 1.2rem;
   align-items: center;
   font-weight: 500;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--color-grey-600);
 `;
 
@@ -27,8 +27,9 @@ function UserAvatar() {
   const { fullName, avatar } = user.user_metadata;
   return (
     <StyledUserAvatar>
-      <Avatar src={avatar || "default-user.jpg"} alt="user-avatar" />
-      <span>{fullName}</span>
+      {/* <Avatar src={avatar || "./../../exotic-icon.png"} alt="user-avatar" /> */}
+      <span>Hi😀, {fullName}!</span>
+      <span>{new Date(Date.now()).toISOString().split("T")[0]}</span>
     </StyledUserAvatar>
   );
 }

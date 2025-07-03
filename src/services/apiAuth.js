@@ -42,7 +42,6 @@ export async function logout() {
 }
 
 export async function updateCurrentUser({ password, fullName, avatar }) {
-  console.log(fullName);
   let updateData;
   if (password) updateData = { password };
   if (fullName) updateData = { data: { fullName } };
@@ -53,16 +52,16 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
   if (!avatar) return data;
   // upload avatar
   const fileName = `avatar-${data.user.id}-${Math.random()}`;
-  const { error: storageError } = supabase.storage
+  const { error: storageError } = await supabase.storage
     .from("avatars")
     .upload(fileName, avatar);
   if (storageError) throw new Error(storageError.message);
 
   // update user again
-  // const defaultUrl = `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//1-2419.jpg`;
+  // https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//1-2419.jpg
   const { data: updatedUser, error2 } = await supabase.auth.updateUser({
     data: {
-      avatar: `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//${fileName}`,
+      avatar: `https://ckeshpohmxrumccvqdhm.supabase.co/storage/v1/object/public/avatars//${fileName}.jpg`,
     },
   });
   if (error2) throw new Error(error2.message);

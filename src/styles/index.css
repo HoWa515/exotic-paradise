@@ -16,13 +16,13 @@
 :root {
   /* Indigo */
   --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #f0d1e8;
-  --color-brand-500: #dca6cd;
-  --color-brand-600: #cc8aba;
-  --color-brand-700: #db6fbe;
-  --color-brand-800: #a43285;
-  --color-brand-900: #600a49;
+  --color-brand-100: rgb(222, 239, 239);
+  --color-brand-200: rgb(194, 244, 244);
+  --color-brand-500: rgb(157, 250, 250);
+  --color-brand-600: rgb(119, 251, 251);
+  --color-brand-700: rgb(73, 216, 216);
+  --color-brand-800: rgb(24, 195, 195);
+  --color-brand-900: rgb(7, 149, 149);
 
   /* Grey */
   --color-grey-0: #fff;
@@ -38,15 +38,15 @@
   --color-grey-900: #111827;
 
   --color-blue-100: #e0f2fe;
-  --color-blue-700: #0369a1;
+  --color-blue-700: #2497d6;
   --color-green-100: #dcfce7;
-  --color-green-700: #15803d;
+  --color-green-700: #30ab5d;
   --color-yellow-100: #fef9c3;
   --color-yellow-700: #a16207;
   --color-silver-100: #e5e7eb;
   --color-silver-700: #374151;
   --color-indigo-100: #e0e7ff;
-  --color-indigo-700: #4338ca;
+  --color-indigo-700: #6c62d9;
 
   --color-red-100: #fee2e2;
   --color-red-700: #b91c1c;
