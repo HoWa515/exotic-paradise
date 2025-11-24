@@ -17,7 +17,7 @@ export function useLogin() {
       navigate("/hotels", { replace: true });
     },
     onError: (err) => {
-      toast.error("Email or passwrod are incorrect");
+      toast.error("Email or password are incorrect");
     },
   });
   return { login, isLoading };
